@@ -1,8 +1,49 @@
 import Head from "next/head";
+import {
+  Container,
+  Box,
+  Flex,
+  Heading,
+  Menu,
+  MenuList,
+  MenuItem,
+  MenuButton,
+  Button,
+  Avatar,
+} from "@chakra-ui/react";
+import { useRouter } from "next/router";
+import Link from "next/link";
+import Cookies from "js-cookie";
+import { useMutation } from "@/hooks/useMutation";
+import { useQueries } from "@/hooks/useQueries";
 
 export default function Layout({ children, metaTitle, metaDescription }) {
+  const router = useRouter();
+  const { mutate } = useMutation();
+  const { data } = useQueries({
+    prefixUrl: "https://paace-f178cafcae7b.nevacloud.io/api/user/me",
+    headers: {
+      Authorization: `Bearer ${Cookies.get("user_token")}`,
+    },
+  });
+  const profileUser = data?.data;
+
+  const HandleLogout = async () => {
+    const response = await mutate({
+      url: "https://paace-f178cafcae7b.nevacloud.io/api/logout",
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${Cookies.get("user_token")}`,
+      },
+    });
+    if (response?.success) {
+      Cookies.remove("user_token");
+      router.reload();
+    }
+  };
+
   return (
-    <div>
+    <>
       <Head>
         <title>{`Create Next App - ${metaTitle}`}</title>
         <meta
@@ -12,7 +53,43 @@ export default function Layout({ children, metaTitle, metaDescription }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      {children}
-    </div>
+      <Container width="full" centerContent>
+        <Flex
+          direction="column"
+          bg="whiteAlpha.900"
+          width="100vw"
+          height="100vh"
+        >
+          <Box height="5vh">
+            <Flex
+              height="full"
+              alignItems="center"
+              justifyContent="space-between"
+              padding="2"
+              borderBottom="1px"
+              borderBottomColor="gray.200"
+            >
+              <Heading as={Link} size="md" href="/">
+                Sanber Daily
+              </Heading>
+              <Menu placement="bottom-end">
+                <MenuButton
+                  as={Button}
+                  size="sm"
+                  leftIcon={<Avatar name={profileUser?.name || ""} size="xs" />}
+                />
+                <MenuList zIndex="2">
+                  <MenuItem>Profile ({profileUser?.name || ""})</MenuItem>
+                  <MenuItem onClick={HandleLogout}>Logout</MenuItem>
+                </MenuList>
+              </Menu>
+            </Flex>
+          </Box>
+          <Box height="95vh" overflow="scroll" padding="2" position="relative">
+            {children}
+          </Box>
+        </Flex>
+      </Container>
+    </>
   );
 }
