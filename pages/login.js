@@ -1,16 +1,16 @@
+import { useMutation } from "@/hooks/useMutation";
 import {
-  Flex,
-  Stack,
-  Heading,
-  FormControl,
-  Input,
   Button,
+  Flex,
+  FormControl,
+  Heading,
+  Input,
+  Stack,
   useToast,
 } from "@chakra-ui/react";
-import { useState } from "react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
-import { useMutation } from "@/hooks/useMutation";
+import { useState } from "react";
 
 export default function Login() {
   const router = useRouter();
@@ -23,7 +23,7 @@ export default function Login() {
 
   const HandleSubmit = async () => {
     const response = await mutate({
-      url: "https://paace-f178cafcae7b.nevacloud.io/api/login",
+      url: "https://service.pace-unv.cloud/api/login",
       payload,
     });
     if (!response?.success) {
@@ -52,7 +52,8 @@ export default function Login() {
           <Input
             value={payload?.email}
             onChange={(event) =>
-              setPayload({ ...payload, email: event.target.value })}
+              setPayload({ ...payload, email: event.target.value })
+            }
             placeholder="email"
           />
         </FormControl>
@@ -60,7 +61,8 @@ export default function Login() {
           <Input
             value={payload.password}
             onChange={(event) =>
-              setPayload({ ...payload, password: event.target.value })}
+              setPayload({ ...payload, password: event.target.value })
+            }
             placeholder="password"
             type="password"
           />

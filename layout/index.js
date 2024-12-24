@@ -1,27 +1,27 @@
-import Head from "next/head";
+import { useMutation } from "@/hooks/useMutation";
+import { useQueries } from "@/hooks/useQueries";
 import {
-  Container,
+  Avatar,
   Box,
+  Button,
+  Container,
   Flex,
   Heading,
   Menu,
-  MenuList,
-  MenuItem,
   MenuButton,
-  Button,
-  Avatar,
+  MenuItem,
+  MenuList,
 } from "@chakra-ui/react";
-import { useRouter } from "next/router";
-import Link from "next/link";
 import Cookies from "js-cookie";
-import { useMutation } from "@/hooks/useMutation";
-import { useQueries } from "@/hooks/useQueries";
+import Head from "next/head";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 export default function Layout({ children, metaTitle, metaDescription }) {
   const router = useRouter();
   const { mutate } = useMutation();
   const { data } = useQueries({
-    prefixUrl: "https://paace-f178cafcae7b.nevacloud.io/api/user/me",
+    prefixUrl: "https://service.pace-unv.cloud/api/user/me",
     headers: {
       Authorization: `Bearer ${Cookies.get("user_token")}`,
     },
@@ -30,8 +30,7 @@ export default function Layout({ children, metaTitle, metaDescription }) {
 
   const HandleLogout = async () => {
     const response = await mutate({
-      url: "https://paace-f178cafcae7b.nevacloud.io/api/logout",
-      method: "GET",
+      url: "https://service.pace-unv.cloud/api/logout",
       headers: {
         Authorization: `Bearer ${Cookies.get("user_token")}`,
       },
