@@ -1,5 +1,6 @@
+// import { useQueries } from "@/hooks/useQueries";
+import { UserContext } from "@/context/userContext";
 import { useMutation } from "@/hooks/useMutation";
-import { useQueries } from "@/hooks/useQueries";
 import {
   Avatar,
   Box,
@@ -16,21 +17,24 @@ import Cookies from "js-cookie";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useContext } from "react";
 
 export default function Layout({ children, metaTitle, metaDescription }) {
   const router = useRouter();
   const { mutate } = useMutation();
-  const { data } = useQueries({
-    prefixUrl: "https://service.pace-unv.cloud/api/user/me",
-    headers: {
-      Authorization: `Bearer ${Cookies.get("user_token")}`,
-    },
-  });
-  const profileUser = data?.data;
+  const dataProfile = useContext(UserContext);
+  // const { data } = useQueries({
+  //   prefixUrl: "https://service.pace-unv.cloud/api/user/me",
+  //   headers: {
+  //     Authorization: `Bearer ${Cookies.get("user_token")}`,
+  //   },
+  // });
+  const profileUser = dataProfile;
+  // const profileUser = data?.data || {};
 
   const HandleLogout = async () => {
     const response = await mutate({
-      url: "https://service.pace-unv.cloud/api/logout",
+      url: `${process.env.NEXT_PUBLIC_API_URL}/logout`,
       headers: {
         Authorization: `Bearer ${Cookies.get("user_token")}`,
       },
@@ -71,6 +75,13 @@ export default function Layout({ children, metaTitle, metaDescription }) {
               <Heading as={Link} size="md" href="/">
                 Sanber Daily
               </Heading>
+              <ul>
+                <li>
+                  <Link href="/">Home</Link>
+                  <Link href="/profile">Profile</Link>
+                  <Link href="/about">About</Link>
+                </li>
+              </ul>
               <Menu placement="bottom-end">
                 <MenuButton
                   as={Button}

@@ -23,7 +23,7 @@ export default function Login() {
 
   const HandleSubmit = async () => {
     const response = await mutate({
-      url: "https://service.pace-unv.cloud/api/login",
+      url: `${process.env.NEXT_PUBLIC_API_URL}/login`,
       payload,
     });
     if (!response?.success) {
